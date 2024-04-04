@@ -1,0 +1,23 @@
+--- implicito
+
+rm | nome | nota | falta
+
+
+SET SERVEROUTPUT ON
+
+declare
+	cursor c_aluno is select * form aluno;
+	v_aluno c_aluno % rowtype;
+	
+begin
+	for reg in c_aluno loop
+
+		if reg.falta > 10 then
+			dbms.output.putline('Reprovado = ' || reg.nome );
+		else
+			dbms.output.putline('Aprovado = ' || reg.nome );
+		end if;
+	
+	end loop;
+
+end;

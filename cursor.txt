@@ -1,0 +1,38 @@
+---- explicito
+
+rm | nome | nota | falta
+
+
+SET SERVEROUTPUT ON
+
+declare
+
+	cursor c_aluno is select * from aluno;
+
+	v_aluno c_aluno%rowtype;
+
+	v_media number (4,2) := 0;
+
+	v_contador number(10) := 0;
+
+begin
+	open c_aluno;
+	loop
+		fetch c_aluno into v_aluno;
+		exit when c_aluno%notfound;
+
+		dbms.output.putline('o nome do aluno' || v_aluno.nome );
+
+		v_media := v_media + v_aluno.nota;
+
+		v_contador := v_contador + 1;
+
+	end loop;
+
+	close c_aluno;
+
+	v_media := v_media / v_contador
+	
+	dbms.output.putline('A media é ' || v_media );
+
+end;
