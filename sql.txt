@@ -1,0 +1,213 @@
+ You can sort extracted data with the ORDER BY command
+
+⭐ DESC sorts data in descending order (from largest to smallest, or Z to A)
+
+⭐ ASC sorts data in ascending order (from smallest to largest, or A to Z)
+
+
+
+⭐ -- LIMIT - pega apartir dos primeiros itens
+SELECT *
+FROM products
+ORDER BY price ASC
+LIMIT 5
+
+
+
+⭐ -- OFFSET - parameter is used with LIMIT to skip a number of records.
+SELECT title
+FROM movies
+LIMIT 3 OFFSET 2
+
+
+   -- vai deixar apenas 2 colunas e somar o valor das colunas price e delivery de cada linha
+SELECT name, price+delivery AS TOTAL
+FROM sales
+	pode ser +,-,*
+
+
+⭐ -- CONCAT - Concatenation joins strings together
+SELECT CONCAT(first_name, last_name) AS full_name
+FROM employees
+
+
+
+⭐ -- WHERE  - used to extract records (row) that meet a condition.
+	SELECT *
+	FROM studio
+	WHERE name = 'Walt Disney'	 --   referring to string values in SQL code, you need to use single quotation marks
+
+	SELECT title
+	FROM movies
+	WHERE year > 2000   ou   year = 2000   ou   year < 2000
+
+
+
+⭐ -- LIKE - used to search for patterns in string fields
+	    - LIKE patterns are case-sensitive
+	    - When a string field contains numbers, they are treated as characters
+
+	  Wildcard symbols such as % and _ are used to find patterns in strings with the commands  --  WHERE ... LIKE ...
+
+	SELECT *
+	FROM comics
+	WHERE title LIKE 'The Avengers%'
+	
+		    LIKE '%gmail.com'
+		    LIKE '%Avenger%'
+
+	  underscore symbol _ is another wildcard and represents 1 single character only.
+
+		A_B8  --  pode ser A4B8, não pode A15B8
+
+
+
+⭐ -- LOWER() and UPPER() - commands to perform case-insensitive pattern searches.
+
+	/* Converts strings in the title field to lowercase */
+		SELECT LOWER(title)
+		FROM movies;
+
+	/* Converts strings in the title field to uppercase */
+		SELECT UPPER(title)
+		FROM movies;
+
+		SELECT title
+		FROM books
+		WHERE LOWER(title) LIKE '%cooking%';
+
+
+
+⭐ --   Greater than or equal to  >=
+	less than or equal to     <=
+	not equal to              <>
+
+	  -- tem uma coluna year e result com f(menor que 2000) e t 
+		SELECT year, year > 2000 AS result
+		FROM movies;
+
+	  -- vai mostrar apnar os filmes com ano maior que 2000
+		SELECT title
+		FROM movies
+		WHERE year > 2000;
+
+
+
+⭐ --   Aggregation operations  -- summarize data to produce 1 single numerical value
+
+	    MAX | MIN  -- Retorna apenas 1 valor
+
+		/* Extracts the highest value in the year field  */
+			SELECT MAX(year)
+			FROM movies;
+
+		/* Extracts the lowest value in the year field  */
+			SELECT MIN(year)
+			FROM movies;
+
+	    COUNT   --  Counts the number of records (colunas)
+
+	    SUM   --  Produces the total sum of the values in a numerical field.
+
+	    AVG   --  Calculates the average value
+			AVG result always is decimal number
+
+
+			SELECT MIN(year)
+			FROM movies
+			WHERE year > 2000
+
+
+		   Vai ter 2 colunas = soma dos preços | média deles
+			SELECT SUM(price), AVG(price)
+			FROM sales;
+
+
+
+⭐ --   Tabela do SQL
+		A schema doesn't show the number of records in the tables of a database
+	
+	+------------+       +-------------+
+	|  Users     |       |   Orders    |
+	+------------+       +-------------+
+	| id (PK)    |<-----+ user_id (FK) |
+	| name       |       | order_date  |
+	| email      |       | total       |
+	+------------+       +-------------+
+
+	id: Primary Key (PK), unique identifier for each user.
+	user_id: Foreign Key (FK), referencing the id in the Users table
+
+
+
+⭐ --   GROUP BY allows you to organize similar data into categories
+
+		SELECT genre, AVG(budget)
+		FROM movies
+		GROUP BY genre;
+
+	1 - filtering, 2 - grouping, 3 - aggregation
+
+		SELECT genre, AVG(budget)
+		FROM movies
+		WHERE budget > 50
+		GROUP BY genre;
+
+
+⭐ --   HAVING allows you to filter data that has been grouped
+	
+	Data is grouped first, then filtered
+
+		SELECT genre, AVG(budget)
+		FROM movies
+		GROUP BY genre
+		HAVING AVG(budget) > 50;
+
+
+
+⭐ --   Cleaning Data -  
+
+	   - GROUP BY in combination with HAVING to check for duplicates in the data.
+
+		--checking for id duplicates
+		SELECT id, COUNT(id)
+		FROM employees
+		GROUP BY id
+		HAVING COUNT(id) > 1;   -> vai aparecer o id repetido
+
+		--check for title duplicates
+		SELECT title, COUNT(title)
+		FROM movies
+		GROUP BY title
+		HAVING COUNT(title) > 1
+
+		/* checking for combination 
+		 duplicates of id and name values */
+		SELECT id, name
+		FROM employees
+		GROUP BY id, name
+		HAVING COUNT(id) > 1;   -> aparece o id e nome repetido
+
+
+	   - DISTINCT   eliminate duplicate values
+
+		SELECT DISTINCT name
+		FROM employees;
+
+		SELECT DISTINCT genre
+		FROM movies
+		WHERE year > 1990;
+
+
+	   - IS NULL   can check if your data contains missing values
+
+		SELECT * 
+		FROM movies 
+		WHERE genre IS NULL   -> mostra dados com valor null
+
+
+	   - IS NOT NULL   will filter null values out
+
+		SELECT * 
+		FROM movies 
+		WHERE genre IS NOT NULL   -> mostra dados sem null
